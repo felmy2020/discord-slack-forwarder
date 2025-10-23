@@ -7,7 +7,8 @@ import re
 import unicodedata
 import ast  # ← リスト形式の環境変数を扱うため
 import random
-
+import asyncio
+import aiohttp
 
 # === 環境変数 ===
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -98,7 +99,7 @@ def should_forward(message_content, embeds) -> bool:
 
 
 # === Slack転送 ===
-def send_to_slack(message_content, author_name, embeds, attachments):
+async def send_to_slack(message_content, author_name, embeds, attachments):
 
     author_name = author_name.replace("• TweetShift#0000", "").strip()
 
@@ -245,8 +246,10 @@ async def on_message(message):
 
     # ✅ 条件を満たしたらSlack送信
     log(f"📨 転送対象: {message.author} @ {message.channel}: {message.content[:50]}")
-    send_to_slack(message.content, str(message.author), message.embeds, message.attachments)
-
+    # 非同期でSlackに送る
+    asyncio.create_task(
+        send_to_slack(message.content, str(message.author), message.embeds, message.attachments)
+    )
 
 
 # === 実行 ===
