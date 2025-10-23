@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  discord-bot:
+    build: .
+    container_name: discord-slack-bot
+    restart: unless-stopped
+    environment:
+      # ⚠️ トークンやWebhook URLは必ず環境変数で管理！
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+      #TARGET_DISCORD_CHANNEL_ID: ${TARGET_DISCORD_CHANNEL_ID}
+      SEARCH_KEYWORDS: ${SEARCH_KEYWORDS}
+    volumes:
+      - .:/usr/src/app
+    command: ["python", "bot.py"]
