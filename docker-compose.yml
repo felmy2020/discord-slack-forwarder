@@ -8,9 +8,9 @@ services:
     environment:
       # ⚠️ トークンやWebhook URLは必ず環境変数で管理！
       DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
-      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
-      #TARGET_DISCORD_CHANNEL_ID: ${TARGET_DISCORD_CHANNEL_ID}
-      SEARCH_KEYWORDS: ${SEARCH_KEYWORDS}
+      SLACK_WEBHOOK_URL_NEW_TWEETS: ${SLACK_WEBHOOK_URL_NEW_TWEETS}
+      # TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS: ${TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS}
+      SEARCH_KEYWORDS_NEW_TWEETS: ${SEARCH_KEYWORDS_NEW_TWEETS}
     volumes:
       - ./discord-slack-forwarder:/usr/src/app
     command: ["python", "bot.py"]

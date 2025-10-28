@@ -12,13 +12,13 @@ import aiohttp
 
 # === 環境変数 ===
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
-TARGET_DISCORD_CHANNEL_ID = os.getenv("TARGET_DISCORD_CHANNEL_ID")
+SLACK_WEBHOOK_URL_NEW_TWEETS = os.getenv("SLACK_WEBHOOK_URL_NEW_TWEETS")
+TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS = os.getenv("TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS")
 
 
 # === 検索キーワード読込 ===
 def load_keywords():
-    raw = os.getenv("SEARCH_KEYWORDS", "")
+    raw = os.getenv("SEARCH_KEYWORDS_NEW_TWEETS", "")
     if not raw.strip():
         return []
     try:
@@ -36,10 +36,10 @@ KEYWORDS = load_keywords()
 
 
 # === チャンネルID設定 ===
-if TARGET_DISCORD_CHANNEL_ID:
-    TARGET_DISCORD_CHANNEL_ID = int(TARGET_DISCORD_CHANNEL_ID)
+if TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS:
+    TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS = int(TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS)
 else:
-    TARGET_DISCORD_CHANNEL_ID = None
+    TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS = None
 
 
 # === Discord設定 ===
@@ -190,7 +190,7 @@ async def send_to_slack(message_content, author_name, embeds, attachments):
     # --- Slack送信 ---
     try:
         res = requests.post(
-            SLACK_WEBHOOK_URL,
+            SLACK_WEBHOOK_URL_NEW_TWEETS,
             headers={"Content-Type": "application/json"},
             data=json.dumps(slack_data)
         )
@@ -205,8 +205,8 @@ async def send_to_slack(message_content, author_name, embeds, attachments):
 @client.event
 async def on_ready():
     log(f"ログインしました: {client.user}")
-    if TARGET_DISCORD_CHANNEL_ID:
-        log(f"🎯 監視チャンネルID: {TARGET_DISCORD_CHANNEL_ID}")
+    if TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS:
+        log(f"🎯 監視チャンネルID: {TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS}")
     else:
         log("⚠️ チャンネル未指定: 全チャンネル監視モード")
     if KEYWORDS:
@@ -219,7 +219,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if TARGET_DISCORD_CHANNEL_ID and message.channel.id != TARGET_DISCORD_CHANNEL_ID:
+    if TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS and message.channel.id != TARGET_DISCORD_CHANNEL_ID_NEW_TWEETS:
         return
     if not (message.content or message.embeds or message.attachments):
         return
@@ -255,8 +255,8 @@ async def on_message(message):
 # === 実行 ===
 if not DISCORD_BOT_TOKEN:
     log("❌ DISCORD_BOT_TOKEN が設定されていません。", level="ERROR")
-elif not SLACK_WEBHOOK_URL:
-    log("❌ SLACK_WEBHOOK_URL が設定されていません。", level="ERROR")
+elif not SLACK_WEBHOOK_URL_NEW_TWEETS:
+    log("❌ SLACK_WEBHOOK_URL_NEW_TWEETS が設定されていません。", level="ERROR")
 else:
     log("🚀 Discord → Slack転送Bot 起動中...")
     client.run(DISCORD_BOT_TOKEN)
